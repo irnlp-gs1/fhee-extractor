@@ -2,9 +2,10 @@
 import os
 from operator import add
 from pyspark.sql import SparkSession
+from pyspark.sql.types import *
 
 APP_NAME = "Extract Food Hazard Events from Food News"
-DATA_FILE = './data/food.csv'
+DATA_FILE = './data/food.csv.gz'
 
 def word_count(spark):
     """A simple word count"""
@@ -16,6 +17,22 @@ def word_count(spark):
     for (word, count) in output:
         print("%s: %i" % (word, count))
 
+def to_parquet(spark):
+    """Save DF as parquet"""
+    schema = StructType([
+        StructField('idx', StringType(), False),
+        StructField('media', StringType(), True),
+        StructField('url', StringType(), True),
+        StructField('title', StringType(), True),
+        StructField('content', StringType(), True),
+        StructField('datetime', StringType(), True),
+    ])
+
+    df = (spark.read
+          .csv(DATA_FILE, sep='\t', header=True, schema=schema, timestampFormat='yyyy-MM-dd HH:mm:ss', nullValue='', nanValue=''))
+
+    df.write.save(os.path.basename(DATA_FILE).split('.')[0] + '.parquet', format='parquet')
+
 def main(spark):
     """Main function
 
@@ -23,7 +40,9 @@ def main(spark):
         sc (pyspark.SpartContext)
     """
     # word count
-    word_count(spark)
+    # word_count(spark)
+
+    to_parquet(spark)
 
 if __name__ == "__main__":
     # Configure SparkConf
