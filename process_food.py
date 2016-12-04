@@ -36,12 +36,11 @@ def to_parquet(spark, data_file=DATA_FILE):
     df = (spark.read
           .csv(data_file, sep='\t', header=True, schema=schema, timestampFormat='yyyy-MM-dd HH:mm:ss', nullValue='', nanValue='', mode='DROPMALFORMED'))
 
-    df.write.save('./output/' + get_filename(data_file) + '.parquet', format='parquet')
-
-def add_uid(spark, data_file=DATA_PARQUET):
-    df = spark.read.parquet(data_file)
+    # add uid
     df_with_uid = df.withColumn('uid', concat_ws('_', df.media, df.idx))
-    df_with_uid.write.save(os.path.join('./output', get_filename(data_file) + '_with_uid' + '.parquet'), format='parquet', mode='overwrite')
+
+    # save
+    df.write.save('./output/' + get_filename(data_file) + '.parquet', format='parquet', mode='overwrite')
 
 def main(spark):
     """Main function
@@ -49,11 +48,8 @@ def main(spark):
     Args:
         sc (pyspark.SpartContext)
     """
-    # word count
-    # word_count(spark)
-
-    # to_parquet(spark)
-    add_uid(spark)
+    # text to parquet
+    to_parquet(spark)
 
 if __name__ == "__main__":
     # Configure SparkConf
