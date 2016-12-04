@@ -1,6 +1,7 @@
 # My
 data/
 output/
+metastore_db/
 **/*.rslsc
 
 # Byte-compiled / optimized / DLL files

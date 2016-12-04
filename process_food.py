@@ -6,6 +6,10 @@ from pyspark.sql.types import *
 
 APP_NAME = "Extract Food Hazard Events from Food News"
 DATA_FILE = './data/food.csv.gz'
+DATA_PARQUET = './output/food.parquet'
+
+def get_filename(fpath):
+    return os.path.basename(fpath).split('.')[0]
 
 def word_count(spark):
     """A simple word count"""
@@ -17,7 +21,7 @@ def word_count(spark):
     for (word, count) in output:
         print("%s: %i" % (word, count))
 
-def to_parquet(spark):
+def to_parquet(spark, data_file=DATA_FILE):
     """Save DF as parquet"""
     schema = StructType([
         StructField('idx', IntegerType(), False),
@@ -29,9 +33,14 @@ def to_parquet(spark):
     ])
 
     df = (spark.read
-          .csv(DATA_FILE, sep='\t', header=True, schema=schema, timestampFormat='yyyy-MM-dd HH:mm:ss', nullValue='', nanValue='', mode='DROPMALFORMED'))
+          .csv(data_file, sep='\t', header=True, schema=schema, timestampFormat='yyyy-MM-dd HH:mm:ss', nullValue='', nanValue='', mode='DROPMALFORMED'))
 
-    df.write.save('./output/' + os.path.basename(DATA_FILE).split('.')[0] + '.parquet', format='parquet')
+    df.write.save('./output/' + get_filename(data_file) + '.parquet', format='parquet')
+
+def add_uid(spark, data_file=DATA_PARQUET):
+    df = spark.read.parquet(data_file)
+    df_with_uid = df.withColumn('uid', '{}_{}'.format(df.media, df.idx)) 
+    df_with_uid.write.save(os.path.join('./output', get_filename(data_file) + '_with_uid' + '.parquet'), format='parquet', mode='overwrite')
 
 def main(spark):
     """Main function
@@ -42,7 +51,8 @@ def main(spark):
     # word count
     # word_count(spark)
 
-    to_parquet(spark)
+    # to_parquet(spark)
+    add_uid(spark)
 
 if __name__ == "__main__":
     # Configure SparkConf
