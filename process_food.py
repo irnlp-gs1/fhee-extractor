@@ -20,18 +20,18 @@ def word_count(spark):
 def to_parquet(spark):
     """Save DF as parquet"""
     schema = StructType([
-        StructField('idx', StringType(), False),
+        StructField('idx', IntegerType(), False),
         StructField('media', StringType(), True),
         StructField('url', StringType(), True),
         StructField('title', StringType(), True),
         StructField('content', StringType(), True),
-        StructField('datetime', StringType(), True),
+        StructField('datetime', TimestampType(), True),
     ])
 
     df = (spark.read
-          .csv(DATA_FILE, sep='\t', header=True, schema=schema, timestampFormat='yyyy-MM-dd HH:mm:ss', nullValue='', nanValue=''))
+          .csv(DATA_FILE, sep='\t', header=True, schema=schema, timestampFormat='yyyy-MM-dd HH:mm:ss', nullValue='', nanValue='', mode='DROPMALFORMED'))
 
-    df.write.save(os.path.basename(DATA_FILE).split('.')[0] + '.parquet', format='parquet')
+    df.write.save('./output/' + os.path.basename(DATA_FILE).split('.')[0] + '.parquet', format='parquet')
 
 def main(spark):
     """Main function
