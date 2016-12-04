@@ -3,6 +3,7 @@ import os
 from operator import add
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
+from pyspark.sql.functions import concat_ws
 
 APP_NAME = "Extract Food Hazard Events from Food News"
 DATA_FILE = './data/food.csv.gz'
@@ -39,7 +40,7 @@ def to_parquet(spark, data_file=DATA_FILE):
 
 def add_uid(spark, data_file=DATA_PARQUET):
     df = spark.read.parquet(data_file)
-    df_with_uid = df.withColumn('uid', '{}_{}'.format(df.media, df.idx)) 
+    df_with_uid = df.withColumn('uid', concat_ws('_', df.media, df.idx))
     df_with_uid.write.save(os.path.join('./output', get_filename(data_file) + '_with_uid' + '.parquet'), format='parquet', mode='overwrite')
 
 def main(spark):
@@ -58,7 +59,7 @@ if __name__ == "__main__":
     # Configure SparkConf
     spark = (SparkSession
         .builder
-        .master('local[3]')
+        .master('local')
         .appName(APP_NAME)
         .getOrCreate())
 
