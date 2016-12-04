@@ -4,10 +4,14 @@ from operator import add
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from pyspark.sql.functions import concat_ws
+from pyspark.sql.functions import udf
+from pyspark.sql import Row
+from konlpy.tag import Mecab
 
 APP_NAME = "Extract Food Hazard Events from Food News"
 DATA_FILE = './data/food.csv.gz'
 DATA_PARQUET = './output/food.parquet'
+OUTPUT_DIR = './output'
 
 def get_filename(fpath):
     return os.path.basename(fpath).split('.')[0]
@@ -21,6 +25,25 @@ def word_count(spark):
     output = counts.collect()
     for (word, count) in output:
         print("%s: %i" % (word, count))
+
+def tag_content(iterator):
+    tagger = Mecab()
+    PosContent = Row('uid', 'tags')
+    for row in iterator:
+        try:
+            tags = tagger.pos(row.content)
+        except AttributeError:
+            tags = []
+        yield PosContent(row.uid, tags)
+    del tagger
+
+def analyze_text(spark, df):
+    tag_rdd = df.repartition(3).rdd.mapPartitions(tag_content)
+    # tag_rdd = df.sample(False, 0.01).repartition(3).rdd.mapPartitions(tag_content)
+    tag_df = spark.createDataFrame(tag_rdd)
+    tag_df.write.save(os.path.join(OUTPUT_DIR, 'food_pos.parquet'),
+                      format='parquet',
+                      mode='overwrite')
 
 def to_parquet(spark, data_file=DATA_FILE):
     """Save DF as parquet"""
@@ -40,7 +63,7 @@ def to_parquet(spark, data_file=DATA_FILE):
     df_with_uid = df.withColumn('uid', concat_ws('_', df.media, df.idx))
 
     # save
-    df.write.save('./output/' + get_filename(data_file) + '.parquet', format='parquet', mode='overwrite')
+    df_with_uid.write.save(OUTPUT_DIR + get_filename(data_file) + '.parquet', format='parquet', mode='overwrite')
 
 def main(spark):
     """Main function
@@ -49,13 +72,17 @@ def main(spark):
         sc (pyspark.SpartContext)
     """
     # text to parquet
-    to_parquet(spark)
+    # to_parquet(spark)
+
+    # tagging
+    df = spark.read.parquet('./output/food.parquet')
+    analyze_text(spark, df)
 
 if __name__ == "__main__":
     # Configure SparkConf
     spark = (SparkSession
         .builder
-        .master('local')
+        .master('local[3]')
         .appName(APP_NAME)
         .getOrCreate())
 
