@@ -42,4 +42,4 @@ mecab-python() {
 init
 mecab-ko
 mecab-ko-dic
-# mecab-python
+mecab-python
