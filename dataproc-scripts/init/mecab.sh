@@ -10,7 +10,7 @@ mkdir -p /tmp
 TEMP_DIR=/tmp
 
 init() {
-    apt-get install -y build-essential autoconf automake
+    apt-get install -y build-essential autoconf automake libtool
 }
 
 mecab-ko() {
@@ -26,7 +26,7 @@ mecab-ko-dic() {
     wget -O $TEMP_DIR/mecab-ko-dic.tar.gz $MECAB_KO_DIC_URL
     tar xzf $TEMP_DIR/mecab-ko-dic.tar.gz -C $TEMP_DIR
     cd $TEMP_DIR/$MECAB_KO_DIC_FNAME
-    ./autogen.sh && ./configure && make && make install
+    ldconfig && ./autogen.sh && ./configure && make && make install
 }
 
 mecab-python() {
