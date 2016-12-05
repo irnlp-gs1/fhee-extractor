@@ -43,7 +43,10 @@ mecab-python() {
     # Install Miniconda / conda
     ./dataproc-initialization-actions/conda/bootstrap-conda.sh
     # install mecab for python
-    pip install mecab-python3
+    # CONDA_PACKAGES=''
+    PIP_PACKAGES='mecab-python3'
+    # CONDA_PACKAGES=$CONDA_PACKAGES PIP_PACKAGES=$PIP_PACKAGES ./dataproc-initialization-actions/conda/install-conda-env.sh
+    PIP_PACKAGES=$PIP_PACKAGES ./dataproc-initialization-actions/conda/install-conda-env.sh
 }
 
 # run
