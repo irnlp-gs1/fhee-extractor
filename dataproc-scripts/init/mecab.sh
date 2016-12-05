@@ -18,7 +18,7 @@ mecab-ko() {
     wget -O $TEMP_DIR/mecab-ko.tar.gz $MECAB_KO_URL
     tar xzf $TEMP_DIR/mecab-ko.tar.gz -C $TEMP_DIR 
     cd $TEMP_DIR/$MECAB_KO_FNAME
-    ./configure && make && make check && make install
+    ./configure && make && make install
 }
 
 mecab-ko-dic() {
@@ -26,7 +26,7 @@ mecab-ko-dic() {
     wget -O $TEMP_DIR/mecab-ko-dic.tar.gz $MECAB_KO_DIC_URL
     tar xzf $TEMP_DIR/mecab-ko-dic.tar.gz -C $TEMP_DIR
     cd $TEMP_DIR/$MECAB_KO_DIC_FNAME
-    automake && ./configure && make && make check && make install
+    ./autogen && ./configure && make && make install
 }
 
 mecab-python() {
