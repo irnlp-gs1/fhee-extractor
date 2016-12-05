@@ -42,10 +42,8 @@ mecab-python() {
     git clone -b "$INIT_ACTIONS_BRANCH" --single-branch $INIT_ACTIONS_REPO
     # Install Miniconda / conda
     ./dataproc-initialization-actions/conda/bootstrap-conda.sh
-    # Update conda root environment with specific packages in pip and conda
-    CONDA_PACKAGES=''
-    PIP_PACKAGES='mecab-python3'
-    CONDA_PACKAGES=$CONDA_PACKAGES PIP_PACKAGES=$PIP_PACKAGES ./dataproc-initialization-actions/conda/install-conda-env.sh
+    # install mecab for python
+    pip install mecab-python3
 }
 
 # run
