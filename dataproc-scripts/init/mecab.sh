@@ -9,6 +9,10 @@ MECAB_KO_DIC_URL=https://bitbucket.org/eunjeon/mecab-ko-dic/downloads/$MECAB_KO_
 mkdir -p /tmp
 TEMP_DIR=/tmp
 
+init() {
+    apt-get install build-essential autoconf automake
+}
+
 mecab-ko() {
     echo "Installing mecab-ko"
     wget -O $TEMP_DIR/mecab-ko.tar.gz $MECAB_KO_URL
@@ -35,6 +39,7 @@ mecab-python() {
 }
 
 # run
+init
 mecab-ko
 mecab-ko-dic
-mecab-python
+# mecab-python
