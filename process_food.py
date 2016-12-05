@@ -9,9 +9,9 @@ from pyspark.sql import Row
 from konlpy.tag import Mecab
 
 APP_NAME = "Extract Food Hazard Events from Food News"
-DATA_FILE = './data/food.csv.gz'
-DATA_PARQUET = './output/food.parquet'
-OUTPUT_DIR = './output'
+DATA_FILE = 'gs://irnlp-gs1/data/food.csv.gz'
+DATA_PARQUET = 'gs://irnlp-gs1/output/food.parquet'
+OUTPUT_DIR = 'gs://irnlp-gs1/output'
 
 def get_filename(fpath):
     return os.path.basename(fpath).split('.')[0]
@@ -38,7 +38,7 @@ def tag_content(iterator):
     del tagger
 
 def analyze_text(spark, df):
-    tag_rdd = df.repartition(3).rdd.mapPartitions(tag_content)
+    tag_rdd = df.rdd.mapPartitions(tag_content)
     # tag_rdd = df.sample(False, 0.01).repartition(3).rdd.mapPartitions(tag_content)
     tag_df = spark.createDataFrame(tag_rdd)
     tag_df.write.save(os.path.join(OUTPUT_DIR, 'food_pos.parquet'),
@@ -63,7 +63,7 @@ def to_parquet(spark, data_file=DATA_FILE):
     df_with_uid = df.withColumn('uid', concat_ws('_', df.media, df.idx))
 
     # save
-    df_with_uid.write.save(OUTPUT_DIR + get_filename(data_file) + '.parquet', format='parquet', mode='overwrite')
+    df_with_uid.write.save(DATA_PARQUET, format='parquet', mode='overwrite')
 
 def main(spark):
     """Main function
@@ -75,14 +75,14 @@ def main(spark):
     # to_parquet(spark)
 
     # tagging
-    df = spark.read.parquet('./output/food.parquet')
+    df = spark.read.parquet(DATA_PARQUET)
     analyze_text(spark, df)
 
 if __name__ == "__main__":
     # Configure SparkConf
     spark = (SparkSession
         .builder
-        .master('local[3]')
+        # .master('local[3]')
         .appName(APP_NAME)
         .getOrCreate())
 
