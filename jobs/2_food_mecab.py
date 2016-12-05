@@ -71,12 +71,6 @@ if __name__ == "__main__":
         .builder
         .appName(APP_NAME)
         .master('yarn')
-        # .config('spark.yarn.am.memory', '10g')
-        # .config('spark.driver.memory', '10g')
-        # .config('spark.driver.cores', '3')
-        # .config('spark.yarn.am.cores', '3')
-        # .config('spark.executor.cores', '3')
-        # .config('spark.executor.memory', '10g')
         .getOrCreate())
 
     # Execute
