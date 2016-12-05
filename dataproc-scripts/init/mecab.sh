@@ -10,7 +10,7 @@ mkdir -p /tmp
 TEMP_DIR=/tmp
 
 init() {
-    apt-get install build-essential autoconf automake
+    apt-get install -y build-essential autoconf automake
 }
 
 mecab-ko() {
