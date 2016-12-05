@@ -8,7 +8,7 @@ from pyspark.sql.functions import udf
 from pyspark.sql import Row
 from konlpy.tag import Mecab
 
-APP_NAME = "Extract Food Hazard Events from Food News"
+APP_NAME = "Food - Mecab"
 DATA_FILE = 'gs://irnlp-gs1/data/food.csv.gz'
 DATA_PARQUET = 'gs://irnlp-gs1/output/food.parquet'
 OUTPUT_DIR = 'gs://irnlp-gs1/output'
@@ -71,6 +71,12 @@ if __name__ == "__main__":
         .builder
         .appName(APP_NAME)
         .master('yarn')
+        # .config('spark.yarn.am.memory', '10g')
+        # .config('spark.driver.memory', '10g')
+        # .config('spark.driver.cores', '3')
+        # .config('spark.yarn.am.cores', '3')
+        # .config('spark.executor.cores', '3')
+        # .config('spark.executor.memory', '10g')
         .getOrCreate())
 
     # Execute

@@ -7,7 +7,7 @@ from pyspark.sql.functions import concat_ws
 from pyspark.sql.functions import udf
 from pyspark.sql import Row
 
-APP_NAME = "Extract Food Hazard Events from Food News"
+APP_NAME = "Food - To Parquet"
 DATA_FILE = 'gs://irnlp-gs1/data/food.csv.gz'
 DATA_PARQUET = 'gs://irnlp-gs1/output/food.parquet'
 OUTPUT_DIR = 'gs://irnlp-gs1/output'
