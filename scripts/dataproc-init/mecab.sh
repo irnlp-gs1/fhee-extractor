@@ -29,7 +29,7 @@ mecab-ko-dic() {
     ldconfig && ./autogen.sh && ./configure && make && make install
 }
 
-mecab-python() {
+anaconda() {
     ROLE=$(curl -f -s -H Metadata-Flavor:Google http://metadata/computeMetadata/v1/instance/attributes/dataproc-role)
     INIT_ACTIONS_REPO=$(curl -f -s -H Metadata-Flavor:Google http://metadata/computeMetadata/v1/instance/attributes/INIT_ACTIONS_REPO || true)
     INIT_ACTIONS_REPO="${INIT_ACTIONS_REPO:-https://github.com/GoogleCloudPlatform/dataproc-initialization-actions.git}"
@@ -42,6 +42,9 @@ mecab-python() {
     git clone -b "$INIT_ACTIONS_BRANCH" --single-branch $INIT_ACTIONS_REPO
     # Install Miniconda / conda
     ./dataproc-initialization-actions/conda/bootstrap-conda.sh
+}
+
+mecab-python() {
     # install mecab for python
     CONDA_PACKAGES='ipython'
     PIP_PACKAGES='mecab-python3'
@@ -56,4 +59,5 @@ mecab-python() {
 init
 mecab-ko
 mecab-ko-dic
+anaconda
 mecab-python

@@ -16,16 +16,6 @@ OUTPUT_DIR = 'gs://irnlp-gs1/output'
 def get_filename(fpath):
     return os.path.basename(fpath).split('.')[0]
 
-def word_count(spark):
-    """A simple word count"""
-    lines = spark.read.text(DATA_FILE).rdd.map(lambda r: r[0])
-    counts = lines.flatMap(lambda x: x.split(' ')) \
-                  .map(lambda x: (x, 1)) \
-                  .reduceByKey(add)
-    output = counts.collect()
-    for (word, count) in output:
-        print("%s: %i" % (word, count))
-
 def tag_content(iterator):
     tagger = Mecab()
     PosContent = Row('uid', 'tags')
@@ -71,9 +61,6 @@ def main(spark):
     Args:
         sc (pyspark.SpartContext)
     """
-    # text to parquet
-    # to_parquet(spark)
-
     # tagging
     df = spark.read.parquet(DATA_PARQUET)
     analyze_text(spark, df)
@@ -82,7 +69,6 @@ if __name__ == "__main__":
     # Configure SparkConf
     spark = (SparkSession
         .builder
-        # .master('local[3]')
         .appName(APP_NAME)
         .getOrCreate())
 
