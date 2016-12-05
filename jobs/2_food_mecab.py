@@ -70,6 +70,7 @@ if __name__ == "__main__":
     spark = (SparkSession
         .builder
         .appName(APP_NAME)
+        .master('yarn')
         .getOrCreate())
 
     # Execute
