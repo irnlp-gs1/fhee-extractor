@@ -43,10 +43,13 @@ mecab-python() {
     # Install Miniconda / conda
     ./dataproc-initialization-actions/conda/bootstrap-conda.sh
     # install mecab for python
-    # CONDA_PACKAGES=''
+    CONDA_PACKAGES='ipython'
     PIP_PACKAGES='mecab-python3'
-    # CONDA_PACKAGES=$CONDA_PACKAGES PIP_PACKAGES=$PIP_PACKAGES ./dataproc-initialization-actions/conda/install-conda-env.sh
+    CONDA_PACKAGES=$CONDA_PACKAGES PIP_PACKAGES=$PIP_PACKAGES ./dataproc-initialization-actions/conda/install-conda-env.sh
     PIP_PACKAGES=$PIP_PACKAGES ./dataproc-initialization-actions/conda/install-conda-env.sh
+    
+    # install konlpy
+    /usr/local/bin/miniconda/bin/pip install git+https://github.com/kyoungrok0517/konlpy
 }
 
 # run
