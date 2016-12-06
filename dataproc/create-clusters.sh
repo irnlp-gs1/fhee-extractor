@@ -1,5 +1,6 @@
 #!/bin/bash
-gcloud dataproc clusters create gs1-sample \
+gcloud dataproc clusters create gs1-fhee \
+    --async \
     --project irnlp-gs1 \
     --bucket irnlp-gs1 \
     --initialization-actions \

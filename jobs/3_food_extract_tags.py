@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import unicode_literals
 import os
 from operator import add
 from pyspark.sql import SparkSession
@@ -9,7 +10,7 @@ from pyspark.sql import Row
 from konlpy.tag import Mecab
 
 APP_NAME = "Food - Mecab"
-PREFIX = ''
+PREFIX = 'gs://irnlp-gs1/'
 DATA_FILE = '{}data/food.csv.gz'.format(PREFIX)
 DATA_PARQUET = '{}output/food.parquet'.format(PREFIX)
 TAGS_PARQUET = '{}output/food_pos.parquet'.format(PREFIX)
