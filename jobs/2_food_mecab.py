@@ -9,9 +9,10 @@ from pyspark.sql import Row
 from konlpy.tag import Mecab
 
 APP_NAME = "Food - Mecab"
-DATA_FILE = 'gs://irnlp-gs1/data/food.csv.gz'
-DATA_PARQUET = 'gs://irnlp-gs1/output/food.parquet'
-OUTPUT_DIR = 'gs://irnlp-gs1/output'
+PREFIX = ''
+DATA_FILE = '{}data/food.csv.gz'.format(PREFIX)
+DATA_PARQUET = '{}output/food.parquet'.format(PREFIX)
+OUTPUT_DIR = '{}output'.format(PREFIX)
 
 def get_filename(fpath):
     return os.path.basename(fpath).split('.')[0]
@@ -70,7 +71,6 @@ if __name__ == "__main__":
     spark = (SparkSession
         .builder
         .appName(APP_NAME)
-        .master('yarn')
         .getOrCreate())
 
     # Execute
