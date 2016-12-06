@@ -4,7 +4,7 @@ import re
 def get_fhee_inverted_dict(dict_path='../dict/fhee_dict.tsv'):
     """Get FHEE inverted dictionary (category => word)
 
-    Blanks and special characters (e.g. -) in a single multi-word is removed.
+    Blanks and special characters (e.g. -) in a multi-word expression are removed.
 
     Args:
         dict_path (str): path to dictionary file
