@@ -21,7 +21,7 @@ def extract_tags(spark):
     df = spark.read.parquet(TAGS_PARQUET)
     tag_sentences = df.rdd.map(lambda r: Row(uid=r.uid, tag_sentence=' '.join(['{}_{}'.format(token, tag) for (token, tag) in r.tags]).strip()))
     df_tag_sentences = spark.createDataFrame(tag_sentences)
-    df_tag_sentences.write.save(os.path.join(OUTPUT_DIR, 'food_pos_sentences.json'), format='json', mode='overwrite')
+    df_tag_sentences.write.save(os.path.join(OUTPUT_DIR, 'food_pos_sentences.parquet'), format='parquet', mode='overwrite')
 
 def main(spark):
     """Main function
